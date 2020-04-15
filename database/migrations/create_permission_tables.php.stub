@@ -24,6 +24,7 @@ class CreatePermissionTables extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('guard_name');
+            $table->string('context_type');
             $table->timestamps();
         });
 
@@ -31,6 +32,7 @@ class CreatePermissionTables extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('guard_name');
+            $table->string('context_type');
             $table->timestamps();
         });
 
@@ -40,13 +42,17 @@ class CreatePermissionTables extends Migration
             $table->string('model_type');
             $table->unsignedBigInteger($columnNames['model_morph_key']);
             $table->index([$columnNames['model_morph_key'], 'model_type'], 'model_has_permissions_model_id_model_type_index');
+            
+            /** Customized */ 
+            $table->string('context_type');
+            $table->unsignedBigInteger('context_id')->nullable();
 
             $table->foreign('permission_id')
                 ->references('id')
                 ->on($tableNames['permissions'])
                 ->onDelete('cascade');
 
-            $table->primary(['permission_id', $columnNames['model_morph_key'], 'model_type'],
+            $table->primary(['permission_id', $columnNames['model_morph_key'], 'model_type', 'context_type'],
                     'model_has_permissions_permission_model_type_primary');
         });
 
@@ -62,7 +68,11 @@ class CreatePermissionTables extends Migration
                 ->on($tableNames['roles'])
                 ->onDelete('cascade');
 
-            $table->primary(['role_id', $columnNames['model_morph_key'], 'model_type'],
+            /** Customized */ 
+            $table->string('context_type');
+            $table->unsignedBigInteger('context_id')->nullable();
+
+            $table->primary(['role_id', $columnNames['model_morph_key'], 'model_type', 'context_type'],
                     'model_has_roles_role_model_type_primary');
         });
 
