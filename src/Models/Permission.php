@@ -89,7 +89,7 @@ class Permission extends Model implements PermissionContract
         if ($context === null) {
             return $this->users()
                         ->wherePivot('context_type', 'global')
-                        ->wherePivot('context_id', null)
+                        ->wherePivot('context_id', 0)
                         ->withPivot([
                             'context_type',
                             'context_id'
@@ -100,7 +100,7 @@ class Permission extends Model implements PermissionContract
 
         return $this->users()
                     ->wherePivot('context_type', $contextType)
-                    ->wherePivot('context_id', null)
+                    ->wherePivot('context_id', 0)
                     ->withPivot([
                         'context_type',
                         'context_id'
@@ -289,7 +289,7 @@ class Permission extends Model implements PermissionContract
             $contextId = $context->id;
         } else {
             $contextType = 'global';
-            $contextId = null;
+            $contextId = 0;
         }
 
         $attributes['permission_id'] = $this->id;

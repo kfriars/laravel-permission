@@ -72,7 +72,7 @@ trait HasPermissions
         if ($context === null) {
             return $this->permissions()
                         ->wherePivot('context_type', 'global')
-                        ->wherePivot('context_id', null)
+                        ->wherePivot('context_id', 0)
                         ->withPivot([
                             'context_type',
                             'context_id'
@@ -662,6 +662,56 @@ trait HasPermissions
         $this->forgetCachedPermissions();
 
         $this->load('permissions');
+
+        return $this;
+    }
+
+    /**
+     * Revoke all permissions from the model for the every context.
+     *
+     * @return $this
+     */
+    public function removeAllPermissions()
+    {
+        $this->permissions()->detach();
+
+        $this->load('permissions');
+
+        $this->forgetCachedPermissions();
+
+        return $this;
+    }
+
+    /**
+     * Revoke all permissions from the model for the global context.
+     *
+     * @return $this
+     */
+    public function revokeAllGlobalPermissions()
+    {
+        $this->permissionsFor(null)->detach();
+
+        $this->load('permissions');
+
+        $this->forgetCachedPermissions();
+
+        return $this;
+    }
+
+    /**
+     * Revoke all permissions from the model for the given context.
+     *
+     * @param Model $context
+     *
+     * @return $this
+     */
+    public function revokeAllPermissionsFor(Model $context)
+    {
+        $this->permissionsFor($context)->detach();
+
+        $this->load('permissions');
+
+        $this->forgetCachedPermissions();
 
         return $this;
     }

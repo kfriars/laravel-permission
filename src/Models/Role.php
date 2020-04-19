@@ -62,7 +62,7 @@ class Role extends Model implements RoleContract
      */
     public function globalPermissions(): BelongsToMany
     {
-        return $this->permissionsFor(null);
+        return $this->permissions();
     }
 
     /**
@@ -103,7 +103,7 @@ class Role extends Model implements RoleContract
         if ($context === null) {
             return $this->users()
                         ->wherePivot('context_type', 'global')
-                        ->wherePivot('context_id', null)
+                        ->wherePivot('context_id', 0)
                         ->withPivot([
                             'context_type',
                             'context_id'
@@ -318,7 +318,7 @@ class Role extends Model implements RoleContract
             $contextId = $context->id;
         } else {
             $contextType = 'global';
-            $contextId = null;
+            $contextId = 0;
         }
 
         $attributes['role_id'] = $this->id;

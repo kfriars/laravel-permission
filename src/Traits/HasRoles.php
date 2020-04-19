@@ -71,7 +71,7 @@ trait HasRoles
         if ($context === null) {
             return $this->roles()
                         ->wherePivot('context_type', 'global')
-                        ->wherePivot('context_id', null)
+                        ->wherePivot('context_id', 0)
                         ->withPivot([
                             'context_type',
                             'context_id'
@@ -233,6 +233,56 @@ trait HasRoles
     public function removeRoleFor(?Model $context, $role)
     {
         $this->rolesFor($context)->detach($this->getStoredRoleFor($context, $role));
+
+        $this->load('roles');
+
+        $this->forgetCachedPermissions();
+
+        return $this;
+    }
+
+    /**
+     * Revoke all roles from the model for the every context.
+     *
+     * @return $this
+     */
+    public function removeAllRoles()
+    {
+        $this->roles()->detach();
+
+        $this->load('roles');
+
+        $this->forgetCachedPermissions();
+
+        return $this;
+    }
+
+    /**
+     * Revoke all roles from the model for the global context.
+     *
+     * @return $this
+     */
+    public function removeAllGlobalRoles()
+    {
+        $this->rolesFor(null)->detach();
+
+        $this->load('roles');
+
+        $this->forgetCachedPermissions();
+
+        return $this;
+    }
+
+    /**
+     * Revoke all roles from the model for the given context.
+     *
+     * @param Model $context
+     *
+     * @return $this
+     */
+    public function removeAllRolesFor(Model $context)
+    {
+        $this->rolesFor($context)->detach();
 
         $this->load('roles');
 
